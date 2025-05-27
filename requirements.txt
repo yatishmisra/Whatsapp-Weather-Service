@@ -1,2 +1,5 @@
-Flask==2.2.5
-twilio==8.11.0
+flask
+requests
+beautifulsoup4
+twilio
+gunicorn
