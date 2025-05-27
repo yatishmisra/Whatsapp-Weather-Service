@@ -1,19 +1,35 @@
-from flask import Flask, request
-from twilio.twiml.messaging_response import MessagingResponse
+from flask import Flask
+import requests
+from bs4 import BeautifulSoup
+from twilio.rest import Client
+import os
 
 app = Flask(__name__)
 
-@app.route("/whatsapp", methods=["POST"])
-def whatsapp():
-    msg = request.values.get("Body", "").strip().lower()
-    resp = MessagingResponse()
-    reply = resp.message()
+@app.route('/')
+def health_check():
+    return 'OK', 200
 
-    if msg == "hello":
-        reply.body("Hi! I'm your test bot.")
-    elif msg == "news":
-        reply.body("Top headline: AI takes over the world!")
-    else:
-        reply.body("Send 'hello' or 'news'.")
+@app.route('/send-weather', methods=['GET'])
+def send_weather():
+    try:
+        url = 'https://www.gov.je/weather/'
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    return str(resp)
+        temp = soup.select_one('.currentWeather__temperature').text.strip()
+        desc = soup.select_one('.currentWeather__description').text.strip()
+        message = f"🌤️ Jersey Weather:\n{temp}, {desc}"
+
+        client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
+        client.messages.create(
+            body=message,
+            from_='whatsapp:+14155238886',
+            to=os.environ['TO_WHATSAPP']
+        )
+
+        return 'Message sent!', 200
+
+    except Exception as e:
+        return f"Error: {e}", 500
