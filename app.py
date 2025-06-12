@@ -16,7 +16,9 @@ def get_weather_message():
 🕒 Issued: {data.get("forecastTime", "N/A")} on {data.get("forecastDate", "N/A")}
 🌡️ Current: {data.get("currentTemprature", "N/A")}
 
-📋 *Summary:* {today.get("description", "N/A")}
+📋 *Summary:* {today.get("morningDescripiton", "N/A")}
+📋 *Summary:* {today.get("afternoonDescripiton", "N/A")}
+📋 *Summary:* {today.get("nightDescripiton", "N/A")}
 🌅 Sunrise: {today.get("sunRise", "N/A")}, 🌇 Sunset: {today.get("sunSet", "N/A")}
 💨 Wind: {today.get("windToolTipMPH", "N/A")}
 🔆 UV Index: {today.get("uvIndex", "N/A")}
