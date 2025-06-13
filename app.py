@@ -5,6 +5,12 @@ from twilio.twiml.messaging_response import MessagingResponse
 
 app = Flask(__name__)
 
+# Health check route for uptime monitoring
+@app.route("/", methods=["GET"])
+def health_check():
+    return "✅ WhatsApp Weather Bot is alive", 200
+
+# Fetch weather data from the official JSON source
 def get_weather_message():
     url = "https://prodgojweatherstorage.blob.core.windows.net/data/jerseyForecast.json"
     try:
